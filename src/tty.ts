@@ -35,7 +35,7 @@ export class TTY {
 
         INITIAL_POSITION.TREX = { x: 1, y: this._height - TREX_HEIGHT - RUNWAY_BOTTOM_MARGIN };
         INITIAL_POSITION.RUNWAY = { x: 0, y: this._height - RUNWAY_BOTTOM_MARGIN };
-        INITIAL_POSITION.SCOREBOARD = { x: this._width - this.scoreboard.getBoardWidth() - SCOREBOARD_RIGHT_MARGIN, y: SCOREBOARD_TOP_MARGIN };
+        INITIAL_POSITION.SCOREBOARD =  this.scoreboard.getBoardDrawingPos();
     }
 
     public drawScreen(): void {

@@ -1,3 +1,14 @@
+/********************** RUNWAY CONSTANTS **********************/
+
+export const RUNWAY_BOTTOM_MARGIN = 2;
+
+/********************** SCOREBOARD CONSTANTS **********************/
+
+export const SCOREBOARD_RIGHT_MARGIN = 6;
+export const SCOREBOARD_TOP_MARGIN = 4;
+
+/********************** TREX CONSTANTS **********************/
+
 export const TREX_WIDTH = 20;
 export const TREX_HEIGHT = 7;
 

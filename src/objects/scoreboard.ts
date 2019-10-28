@@ -38,20 +38,30 @@ export class Scoreboard {
         return this.getDrawableEdges();
     }
 
+    private edgeChar(x: number, y: number) {
+        [0, this._boardHeight - 1]
+    }
+
     private getDrawableEdges(): string[] {
-        const edges: string[] = Array(this._boardHeight).fill(false).map((rowVal, rowIndex) =>
+        const edges: string[][] = Array(this._boardHeight).fill(false).map((rowVal, rowIndex) =>
             Array(this._boardWidth).fill(false).map((colVal, colIndex) => {
 
                 if (rowIndex === 0 || rowIndex === this._boardHeight - 1) {
                     return '─';
                 } else if (colIndex === 0 || colIndex === this._boardWidth - 1) {
-                    return '|';
+                    return '│';
                 } else {
                     return ' ';
                 }
 
-            }).join(''));
-        return edges;
+            }));
+
+        edges[0][0] = '┌';
+        edges[0][this._boardWidth - 1] = '┐';
+        edges[this._boardHeight - 1][0] = '└';
+        edges[this._boardHeight - 1][this._boardWidth - 1] = '┘';
+
+        return edges.map((v) => v.join(''));
     }
 
     public getBoardWidth(): number {

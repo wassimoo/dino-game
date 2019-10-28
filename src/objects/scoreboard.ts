@@ -38,10 +38,6 @@ export class Scoreboard {
         return this.getDrawableEdges();
     }
 
-    private edgeChar(x: number, y: number) {
-        [0, this._boardHeight - 1]
-    }
-
     private getDrawableEdges(): string[] {
         const edges: string[][] = Array(this._boardHeight).fill(false).map((rowVal, rowIndex) =>
             Array(this._boardWidth).fill(false).map((colVal, colIndex) => {

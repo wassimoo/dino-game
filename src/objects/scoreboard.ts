@@ -15,24 +15,31 @@ const MIN_BOARD_HEIGHT = 4; // minimum to display 2 scores (current & highest)
 
 export class Scoreboard {
 
+    // screen dimensions
     private screenWidth: number;
     private screenHeight: number;
 
+    // scoreboad dimensions
     private _boardWidth: number;
     private _boardHeight: number;
 
+    // booleans
     private drawable: boolean;
     private showHighScore: boolean; // only if there's enough space.
 
+    // absolute positions
     private boardDrawingPos: IScreenPosition;
     private scoreDrawingPos: IScreenPosition;
     private highScoreDrawingPos: IScreenPosition;
 
+    // in board positions
     private inBoardScoreDrawingPos: IScreenPosition;
     private inBoardHighScoreDrawingPos: IScreenPosition;
 
+    // drawable scoreboard
     private scoreBoard: string[];
 
+    // highest score
     private highScore: number;
 
     constructor(width: number, height: number, highScore: number) {
@@ -51,8 +58,8 @@ export class Scoreboard {
             this._boardHeight++;
         }
 
-        const scoreMarginTop = Math.floor(this._boardHeight * 0.25);
-        const highScoreMarginBottom = Math.floor(this._boardHeight * 0.25);
+        const scoreMarginTop = Math.floor(this._boardHeight * 0.25); // 25% under board top edge
+        const highScoreMarginBottom = Math.floor(this._boardHeight * 0.25); // 25% above board bottom edge
 
         this.showHighScore = highScoreMarginBottom + scoreMarginTop + 4 <= this._boardHeight;
 

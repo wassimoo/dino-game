@@ -31,11 +31,11 @@ export class TTY {
         this._width = process.stdout.columns;
         this.trex = new Trex(this._width, this._height);
         this.runway = new Runway(this._width, this._height);
-        this.scoreboard = new Scoreboard(this._width, this._height);
+        this.scoreboard = new Scoreboard(this._width, this._height, 0);
 
         INITIAL_POSITION.TREX = { x: 1, y: this._height - TREX_HEIGHT - RUNWAY_BOTTOM_MARGIN };
         INITIAL_POSITION.RUNWAY = { x: 0, y: this._height - RUNWAY_BOTTOM_MARGIN };
-        INITIAL_POSITION.SCOREBOARD =  this.scoreboard.getBoardDrawingPos();
+        INITIAL_POSITION.SCOREBOARD = this.scoreboard.getBoardDrawingPos();
     }
 
     public drawScreen(): void {
@@ -60,9 +60,7 @@ export class TTY {
     }
 
     public drawScoreboard(): void {
-        if (!this.scoreboard.isDrawable()) {
-            return;
-        } else {
+        if (this.scoreboard.isDrawable()) {
             this.scoreboard.getDrawable().forEach((row, index) => {
 
                 const pos: IScreenPosition = {

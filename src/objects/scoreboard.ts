@@ -7,8 +7,10 @@ import {
 const SCORE_TEXT = "Current Score:";
 const HIGHEST_SCORE_TEXT = "Highest Score:";
 
+const SCORE_MIN_UNITS = 5;
+const SCORE_MAX_UNITS = 7;
 
-const MIN_BOARD_WIDTH = 12;
+const MIN_BOARD_WIDTH = 20;
 const MIN_BOARD_HEIGHT = 4; // minimum to display 2 scores (current & highest)
 
 export class Scoreboard {
@@ -30,12 +32,15 @@ export class Scoreboard {
     private inBoardScoreDrawingPos: IScreenPosition;
     private inBoardHighScoreDrawingPos: IScreenPosition;
 
-    private score: number;
+    private scoreBoard: string[];
+
     private highScore: number;
 
-    constructor(width: number, height: number) {
+    constructor(width: number, height: number, highScore: number) {
         this.screenWidth = width;
         this.screenHeight = height;
+
+        this.highScore = highScore;
 
         this._boardWidth = Math.floor(this.screenWidth * 0.3); // 30% of width
         this._boardHeight = Math.floor(this.screenHeight * 0.2); // 20% of height
@@ -53,8 +58,8 @@ export class Scoreboard {
         this.showHighScore = highScoreMarginBottom + scoreMarginTop + 4 <= this._boardHeight;
 
         // in board position
-        this.inBoardScoreDrawingPos = { x: 0, y: scoreMarginTop };
-        this.inBoardHighScoreDrawingPos = { x: 0, y: this._boardHeight - highScoreMarginBottom - 1};
+        this.inBoardScoreDrawingPos = { x: 0, y: scoreMarginTop - 1 };
+        this.inBoardHighScoreDrawingPos = { x: 0, y: this._boardHeight - highScoreMarginBottom - 2 };
 
         // in screen position
         this.boardDrawingPos = { x: this.screenWidth - this._boardWidth - SCOREBOARD_RIGHT_MARGIN, y: SCOREBOARD_TOP_MARGIN };
@@ -62,6 +67,16 @@ export class Scoreboard {
         this.scoreDrawingPos = { x: score_x, y: this.boardDrawingPos.y + scoreMarginTop };
         this.highScoreDrawingPos = { x: score_x, y: this.boardDrawingPos.y + this._boardHeight - highScoreMarginBottom - 2 };
 
+        // initialize board content without actual scores
+        this.initScoreBoard();
+    }
+
+    private initScoreBoard() {
+        const board: string[] = this.initEdges();
+        this.insertContent(board, SCORE_TEXT, this.inBoardScoreDrawingPos.y);
+        this.insertContent(board, HIGHEST_SCORE_TEXT, this.inBoardHighScoreDrawingPos.y);
+
+        this.scoreBoard = board;
     }
 
     public isDrawable(): boolean {
@@ -73,22 +88,25 @@ export class Scoreboard {
     }
 
     public getDrawable(): string[] {
-        let board: string[] = this.getDrawableEdges();
-        this.fillScoredBoard(board, this.inBoardScoreDrawingPos.y, SCORE_TEXT);
-        this.fillScoredBoard(board, this.inBoardHighScoreDrawingPos.y, HIGHEST_SCORE_TEXT);
-        return board;
+        return this.scoreBoard;
     }
 
-    private fillScoredBoard(board: string[], pos: number, text: string) {
-        const sc = [...board[pos]];
-        sc.splice(1, text.length, ...text);
-        board[pos] = sc.join('');
+    /**
+     * Inserts text into scoredboard
+     * @param board insertion board
+     * @param text insertion text
+     * @param y 0 based index position
+     * @param x 0 based index position
+     */
+    private insertContent(board: string[], text: string, y: number, x: number = 0) {
+        const sc = [...board[y + 1]];
+        sc.splice(x + 1, text.length, ...text);
+        board[y + 1] = sc.join('');
     }
 
-    private getDrawableEdges(): string[] {
+    private initEdges(): string[] {
         const edges: string[][] = Array(this._boardHeight).fill(false).map((rowVal, rowIndex) =>
             Array(this._boardWidth).fill(false).map((colVal, colIndex) => {
-
                 if (rowIndex === 0 || rowIndex === this._boardHeight - 1) {
                     return '─';
                 } else if (colIndex === 0 || colIndex === this._boardWidth - 1) {
@@ -96,7 +114,6 @@ export class Scoreboard {
                 } else {
                     return ' ';
                 }
-
             }));
 
         edges[0][0] = '┌';

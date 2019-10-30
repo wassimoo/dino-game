@@ -10,7 +10,7 @@ const HIGHEST_SCORE_TEXT = 'Highest Score:';
 const SCORE_MIN_UNITS = 5;
 const SCORE_MAX_UNITS = 7;
 
-const MIN_BOARD_WIDTH = 20;
+const MIN_BOARD_WIDTH = SCORE_MIN_UNITS + SCORE_TEXT.length + 2; // +2 for borders
 const MIN_BOARD_HEIGHT = 4; // minimum to display 2 scores (current & highest)
 
 export class Scoreboard {
@@ -29,24 +29,30 @@ export class Scoreboard {
 
     // absolute positions
     private boardDrawingPos: IScreenPosition;
-    private scoreDrawingPos: IScreenPosition;
-    private highScoreDrawingPos: IScreenPosition;
 
     // in board positions
-    private inBoardScoreDrawingPos: IScreenPosition;
-    private inBoardHighScoreDrawingPos: IScreenPosition;
+    private inBoardScoreTextPos: IScreenPosition;
+    private inBoardHighScoreTextPos: IScreenPosition;
+
+    private inBoardScorePos: IScreenPosition;
+    private inBoardHighScorePos: IScreenPosition;
+
+    // actual score units between MIN_UNITS..MAX_UNITS
+    private scoreUnits: number;
 
     // drawable scoreboard
     private scoreBoard: string[];
 
-    // highest score
+    // scores
     private highScore: number;
+    private currentScore: number;
 
-    constructor(width: number, height: number, highScore: number) {
+    constructor(width: number, height: number, highScore: number, score: number = 0) {
         this.screenWidth = width;
         this.screenHeight = height;
 
         this.highScore = highScore;
+        this.currentScore = score;
 
         this._boardWidth = Math.floor(this.screenWidth * 0.3); // 30% of width
         this._boardHeight = Math.floor(this.screenHeight * 0.2); // 20% of height
@@ -58,45 +64,77 @@ export class Scoreboard {
             this._boardHeight++;
         }
 
-        const scoreMarginTop = Math.floor(this._boardHeight * 0.25); // 25% under board top edge
-        const highScoreMarginBottom = Math.floor(this._boardHeight * 0.25); // 25% above board bottom edge
-
-        this.showHighScore = highScoreMarginBottom + scoreMarginTop + 4 <= this._boardHeight;
-
-        // in board position
-        this.inBoardScoreDrawingPos = { x: 0, y: scoreMarginTop - 1 };
-        this.inBoardHighScoreDrawingPos = { x: 0, y: this._boardHeight - highScoreMarginBottom - 2 };
-
         // in screen position
         this.boardDrawingPos = { x: this.screenWidth - this._boardWidth - SCOREBOARD_RIGHT_MARGIN, y: SCOREBOARD_TOP_MARGIN };
-        const score_x = this.boardDrawingPos.x;
-        this.scoreDrawingPos = { x: score_x, y: this.boardDrawingPos.y + scoreMarginTop };
-        this.highScoreDrawingPos = { x: score_x, y: this.boardDrawingPos.y + this._boardHeight - highScoreMarginBottom - 2 };
 
-        // initialize board content without actual scores
-        this.initScoreBoard();
+        // calculate actual score units
+        this.scoreUnits = this._boardWidth - SCORE_TEXT.length - 2;
+        if (this.scoreUnits > SCORE_MAX_UNITS) {
+            this.scoreUnits = SCORE_MAX_UNITS;
+        }
+
+        // initialize board content
+        this.initScoreBoard(7899);
     }
 
-    private initScoreBoard() {
+    private initScoreBoard(highScore: number, score: number = 0) {
         const board: string[] = this.initEdges();
-        this.insertContent(board, SCORE_TEXT, this.inBoardScoreDrawingPos.y);
-        this.insertContent(board, HIGHEST_SCORE_TEXT, this.inBoardHighScoreDrawingPos.y);
 
+        this.calculateScoreTextPosition();
+        // calculate score positions relatively to board width, score texts and score units
+        this.calculateScorePosition();
+
+
+        this.insertContent(board, SCORE_TEXT, this.inBoardScoreTextPos.y);
+        this.insertContent(board, HIGHEST_SCORE_TEXT, this.inBoardHighScoreTextPos.y);
         this.scoreBoard = board;
+
+        this.updateCurrentScore(score);
+        this.updateHighScore(highScore);
     }
 
-    public isDrawable(): boolean {
-        return this.drawable;
+    private updateHighScore(newScore: number) {
+        this.highScore = newScore;
+        let score = newScore.toString();
+        if (score.length < this.scoreUnits) {
+            score = score.padStart(this.scoreUnits, '0');
+        }
+        this.insertContent(this.scoreBoard, score, this.inBoardHighScorePos.y, this.inBoardHighScorePos.x);
     }
 
-    public isHighScoreDrawable(): boolean {
-        return this.showHighScore;
+    public updateCurrentScore(newScore: number) {
+        this.currentScore = newScore;
+        let score = newScore.toString();
+        if (score.length < this.scoreUnits) {
+            score = score.padStart(this.scoreUnits, '0');
+        }
+        this.insertContent(this.scoreBoard, score, this.inBoardScorePos.y, this.inBoardScorePos.x);
     }
 
-    public getDrawable(): string[] {
-        return this.scoreBoard;
+    private calculateScoreTextPosition(): void {
+        const topMargin = Math.floor(this._boardHeight * 0.25); // 25% under board top edge
+        const bottomMargin = Math.floor(this._boardHeight * 0.25); // 25% above board bottom edge
+        const leftMargin = 0;
+
+        // in board position
+        this.inBoardScoreTextPos = { x: leftMargin, y: topMargin - 1 };
+        this.inBoardHighScoreTextPos = { x: leftMargin, y: this._boardHeight - bottomMargin - 2 };
+
+        // draw high score or not
+        this.showHighScore = bottomMargin + topMargin + 4 <= this._boardHeight;
     }
 
+    private calculateScorePosition(): void {
+
+        // rightMargin = freespace * 0.80 ;
+        const contentLength = SCORE_TEXT.length + this.inBoardScoreTextPos.x + this.scoreUnits + 2;
+        const rightMargin = Math.floor((this._boardWidth - contentLength) * 0.80); // 80% to the right
+        const xPos = this._boardWidth - this.scoreUnits - rightMargin - 2;
+
+        this.inBoardScorePos = { x: xPos, y: this.inBoardScoreTextPos.y };
+        this.inBoardHighScorePos = { x: xPos, y: this.inBoardHighScoreTextPos.y };
+
+    }
     /**
      * Inserts text into scoredboard
      * @param board insertion board
@@ -130,6 +168,19 @@ export class Scoreboard {
         return edges.map((v) => v.join(''));
     }
 
+    /***************** getters *****************/
+    public isDrawable(): boolean {
+        return this.drawable;
+    }
+
+    public isHighScoreDrawable(): boolean {
+        return this.showHighScore;
+    }
+
+    public getDrawable(): string[] {
+        return this.scoreBoard;
+    }
+
     public getBoardWidth(): number {
         return this._boardWidth;
     }
@@ -140,13 +191,5 @@ export class Scoreboard {
 
     public getBoardDrawingPos(): IScreenPosition {
         return this.boardDrawingPos;
-    }
-
-    public getScoreDrawingPos(): IScreenPosition {
-        return this.scoreDrawingPos;
-    }
-
-    public getHighScoreDrawingPos(): IScreenPosition {
-        return this.highScoreDrawingPos;
     }
 }

@@ -4,8 +4,8 @@ import {
     SCOREBOARD_TOP_MARGIN,
 } from './object.constants';
 
-const SCORE_TEXT = "Current Score:";
-const HIGHEST_SCORE_TEXT = "Highest Score:";
+const SCORE_TEXT = 'Current Score:';
+const HIGHEST_SCORE_TEXT = 'Highest Score:';
 
 const SCORE_MIN_UNITS = 5;
 const SCORE_MAX_UNITS = 7;
@@ -23,7 +23,6 @@ export class Scoreboard {
 
     private drawable: boolean;
     private showHighScore: boolean; // only if there's enough space.
-
 
     private boardDrawingPos: IScreenPosition;
     private scoreDrawingPos: IScreenPosition;

@@ -1,7 +1,7 @@
 
 import ansiEscapes from 'ansi-escapes';
-import { Trex } from './objects/trex';
-import { Runway } from './objects/runway';
+import { Trex } from './objects/trex.object';
+import { Runway } from './objects/runway.object';
 import {
     RUNWAY_BOTTOM_MARGIN,
     SCOREBOARD_RIGHT_MARGIN,
@@ -9,7 +9,7 @@ import {
     TREX_WIDTH,
     TREX_HEIGHT
 } from './objects/object.constants';
-import { Scoreboard } from './objects/scoreboard';
+import { Scoreboard } from './objects/scoreboard.object';
 import { IObjectScreenPosition, IScreenPosition } from './interfaces/IPosition';
 
 export const INITIAL_POSITION: IObjectScreenPosition = {

@@ -31,6 +31,12 @@ export class Runner {
         }, 150);
     }
 
+    private onScreenSizeChange() {
+        process.stdout.on('resize', () => {
+            
+        })
+    }
+
     private setupKeyPressActions(): void {
         process.stdin.on('keypress', (str, key) => {
             const name = key.name;

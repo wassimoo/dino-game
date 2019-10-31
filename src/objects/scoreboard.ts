@@ -3,6 +3,7 @@ import {
     SCOREBOARD_RIGHT_MARGIN,
     SCOREBOARD_TOP_MARGIN,
 } from './object.constants';
+import { ScreenObject } from './object';
 
 const SCORE_TEXT = 'Current Score:';
 const HIGHEST_SCORE_TEXT = 'Highest Score:';
@@ -13,7 +14,7 @@ const SCORE_MAX_UNITS = 7;
 const MIN_BOARD_WIDTH = SCORE_MIN_UNITS + SCORE_TEXT.length + 2; // +2 for borders
 const MIN_BOARD_HEIGHT = 4; // minimum to display 2 scores (current & highest)
 
-export class Scoreboard {
+export class Scoreboard extends ScreenObject {
 
     // screen dimensions
     private screenWidth: number;
@@ -48,6 +49,7 @@ export class Scoreboard {
     private currentScore: number;
 
     constructor(width: number, height: number, highScore: number, score: number = 0) {
+        super();
         this.screenWidth = width;
         this.screenHeight = height;
 
@@ -93,6 +95,10 @@ export class Scoreboard {
         this.updateHighScore(highScore);
     }
 
+    public updateDimensions(width: number, height: number): void {
+
+    }
+
     private updateHighScore(newScore: number) {
         this.highScore = newScore;
         let score = newScore.toString();
@@ -128,7 +134,7 @@ export class Scoreboard {
 
         // rightMargin = freespace * 0.80 ;
         const contentLength = SCORE_TEXT.length + this.inBoardScoreTextPos.x + this.scoreUnits + 2;
-        const rightMargin = Math.floor((this._boardWidth - contentLength) * 0.80); // 80% to the right
+        const rightMargin = Math.floor((this._boardWidth - contentLength) * 0.55); // 80% to the right
         const xPos = this._boardWidth - this.scoreUnits - rightMargin - 2;
 
         this.inBoardScorePos = { x: xPos, y: this.inBoardScoreTextPos.y };

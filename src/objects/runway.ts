@@ -1,9 +1,11 @@
+import { ScreenObject } from './object';
 
-export class Runway {
+export class Runway extends ScreenObject {
     private width: number;
     private height: number;
 
     constructor(width: number, height: number) {
+        super();
         this.width = width;
         this.height = height;
 
@@ -17,5 +19,9 @@ export class Runway {
         }
 
         return drawable;
+    }
+
+    public updateDimensions(): void {
+
     }
 }

@@ -1,16 +1,18 @@
+import { ScreenObject } from './object';
 import {
     RUNNING_TREX_1,
     RUNNING_TREX_2,
     DEAD_TREX,
 } from './object.constants';
 
-export class Trex {
+export class Trex extends ScreenObject {
     private width: number;
     private height: number;
 
     private isAtRunningTrex1: boolean;
 
     constructor(width: number, height: number) {
+        super();
         this.width = width;
         this.height = height;
 
@@ -34,4 +36,7 @@ export class Trex {
         }
     }
 
+    public updateDimensions(): void {
+
+    }
 }

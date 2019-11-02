@@ -21,7 +21,8 @@ export class Runway extends ScreenObject {
         return drawable;
     }
 
-    public updateDimensions(): void {
-
+    public updateDimensions(width: number, height: number): void {
+        this.width = width;
+        this.height = height;
     }
 }

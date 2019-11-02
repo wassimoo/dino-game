@@ -72,7 +72,6 @@ export class Scoreboard extends ScreenObject {
         // calculate score positions relatively to board width, score texts and score units
         this.calculateScorePosition();
 
-
         this.insertContent(board, SCORE_TEXT, this.inBoardScoreTextPos.y);
         this.insertContent(board, HIGHEST_SCORE_TEXT, this.inBoardHighScoreTextPos.y);
         this.scoreBoard = board;
@@ -82,7 +81,12 @@ export class Scoreboard extends ScreenObject {
     }
 
     public updateDimensions(width: number, height: number): void {
+        this.screenWidth = width;
+        this.screenHeight = height;
 
+        this.calculateBoardDimensionsAndPosition();
+        this.calculateScoreUnits();
+        this.initScoreBoard(this.highScore);
     }
 
     private updateHighScore(newScore: number) {

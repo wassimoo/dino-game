@@ -20,8 +20,9 @@ export class Runner {
 
     init() {
         this.setupKeyPressActions();
-        this.terminal.drawScreen();
+        this.setupScreenResizeListner();
 
+        this.terminal.drawScreen();
         this.update();
     }
 
@@ -31,10 +32,10 @@ export class Runner {
         }, 150);
     }
 
-    private onScreenSizeChange() {
+    private setupScreenResizeListner() {
         process.stdout.on('resize', () => {
-            
-        })
+            this.terminal.updateScreen();
+        });
     }
 
     private setupKeyPressActions(): void {

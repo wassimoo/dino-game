@@ -25,7 +25,6 @@ export class TTY {
     public runway: Runway;
     public scoreboard: Scoreboard;
 
-
     constructor() {
         this._height = process.stdout.rows;
         this._width = process.stdout.columns;
@@ -44,10 +43,36 @@ export class TTY {
 
         this.drawRunway();
         this.drawTrex();
-        this.drawScoreboard();
+        this.drawScoreBoard();
 
         this.hideCursor();
     }
+
+    /**
+     * should be called on screen resize only.
+     */
+    public updateScreen(): void {
+        this._height = process.stdout.rows;
+        this._width = process.stdout.columns;
+
+        // update objects 
+        this.runway.updateDimensions(this._width, this._height);
+        this.trex.updateDimensions(this._width, this._height);
+        this.scoreboard.updateDimensions(this._width, this._height);
+
+        // update objects drawing pos
+        INITIAL_POSITION.TREX = { x: 1, y: this._height - TREX_HEIGHT - RUNWAY_BOTTOM_MARGIN };
+        INITIAL_POSITION.RUNWAY = { x: 0, y: this._height - RUNWAY_BOTTOM_MARGIN };
+        INITIAL_POSITION.SCOREBOARD = this.scoreboard.getBoardDrawingPos();
+
+
+        this.clear();
+        this.hideCursor();
+        this.drawRunway();
+        this.drawTrex();
+        this.drawScoreBoard();
+    }
+
 
     public drawRunway(): void {
         TTY.cursorTo(INITIAL_POSITION.RUNWAY);
@@ -59,7 +84,7 @@ export class TTY {
         TTY.print(this.trex.getDrawable());
     }
 
-    public drawScoreboard(): void {
+    public drawScoreBoard(): void {
         if (this.scoreboard.isDrawable()) {
             this.scoreboard.getDrawable().forEach((row, index) => {
 

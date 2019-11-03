@@ -1,8 +1,12 @@
 import * as readline from 'readline';
 import { TTY } from './tty';
+import { RUNNER_CONFIGS as configs } from './configs.constants';
+import { DistanceMeter } from './distance-meter';
 
 export class Runner {
     private terminal: TTY;
+    private distanceMeter: DistanceMeter;
+
     private commandkeys = ['up', 'space', // JUMP
         'down', // DUCK
         'return', // RESTART
@@ -11,11 +15,13 @@ export class Runner {
     private isPaused: boolean;
     private obstacles;
 
-    //configs
+    private msPerFrame = 1000 / configs.FPS;
 
+    //configs
     constructor() {
         readline.emitKeypressEvents(process.stdin);
         this.terminal = new TTY();
+        this.distanceMeter = new DistanceMeter(this.msPerFrame, 0);
     }
 
     init() {
@@ -29,7 +35,11 @@ export class Runner {
     private update() {
         setInterval(() => {
             this.terminal.drawTrex();
-        }, 150);
+            this.distanceMeter.update();
+            const distance = this.distanceMeter.getActualDistance();
+            this.terminal.scoreboard.updateCurrentScore(distance);
+            this.terminal.drawScoreBoard();
+        }, this.msPerFrame);
     }
 
     private setupScreenResizeListner() {

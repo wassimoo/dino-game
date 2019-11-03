@@ -19,6 +19,9 @@ export class DistanceMeter {
     public update(): void {
         const now = Date.now();
         const delta = now - (this.lastDistanceUpdatetime || now); // ms between function calls
+        if(delta <= this.msPerFrame){
+            return;
+        }
         this.lastDistanceUpdatetime = now;
 
         this.distanceRan += delta / this.msPerFrame; // 1 px per frame.

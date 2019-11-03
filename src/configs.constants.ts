@@ -5,4 +5,5 @@ export const DISTANCE_METER_CONFIGS = {
 
 export const RUNNER_CONFIGS = {
     FPS: 60,
+    UPDATE_INTERVAL: 120,
 };

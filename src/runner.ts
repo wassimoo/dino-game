@@ -39,7 +39,7 @@ export class Runner {
             const distance = this.distanceMeter.getActualDistance();
             this.terminal.scoreboard.updateCurrentScore(distance);
             this.terminal.drawScoreBoard();
-        }, this.msPerFrame);
+        }, configs.UPDATE_INTERVAL);
     }
 
     private setupScreenResizeListner() {

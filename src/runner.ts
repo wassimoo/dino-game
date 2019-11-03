@@ -26,8 +26,9 @@ export class Runner {
 
     init() {
         this.setupKeyPressActions();
-        this.terminal.drawScreen();
+        this.setupScreenResizeListner();
 
+        this.terminal.drawScreen();
         this.update();
     }
 
@@ -37,15 +38,14 @@ export class Runner {
             this.distanceMeter.update();
             const distance = this.distanceMeter.getActualDistance();
             this.terminal.scoreboard.updateCurrentScore(distance);
-            this.terminal.drawScoreboard();
+            this.terminal.drawScoreBoard();
         }, this.msPerFrame);
     }
 
-    
-    private onScreenSizeChange() {
+    private setupScreenResizeListner() {
         process.stdout.on('resize', () => {
-            
-        })
+            this.terminal.updateScreen();
+        });
     }
 
     private setupKeyPressActions(): void {

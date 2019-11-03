@@ -14,6 +14,9 @@ const SCORE_MAX_UNITS = 7;
 const MIN_BOARD_WIDTH = SCORE_MIN_UNITS + SCORE_TEXT.length + 2; // +2 for borders
 const MIN_BOARD_HEIGHT = 4; // minimum to display 2 scores (current & highest)
 
+const BOARD_WIDTH_PCT = 0.3; // 30% pct
+const BOARD_HEIGHT_PCT = 0.2; // 20% pct
+
 export class Scoreboard extends ScreenObject {
 
     // screen dimensions
@@ -25,7 +28,6 @@ export class Scoreboard extends ScreenObject {
     private _boardHeight: number;
 
     // booleans
-    private drawable: boolean;
     private showHighScore: boolean; // only if there's enough space.
 
     // absolute positions
@@ -56,24 +58,8 @@ export class Scoreboard extends ScreenObject {
         this.highScore = highScore;
         this.currentScore = score;
 
-        this._boardWidth = Math.floor(this.screenWidth * 0.3); // 30% of width
-        this._boardHeight = Math.floor(this.screenHeight * 0.2); // 20% of height
-
-        this.drawable = this._boardHeight >= MIN_BOARD_HEIGHT && this._boardWidth >= MIN_BOARD_WIDTH;
-
-        // assure space for both scores
-        if (this._boardHeight % 2 !== 0) {
-            this._boardHeight++;
-        }
-
-        // in screen position
-        this.boardDrawingPos = { x: this.screenWidth - this._boardWidth - SCOREBOARD_RIGHT_MARGIN, y: SCOREBOARD_TOP_MARGIN };
-
-        // calculate actual score units
-        this.scoreUnits = this._boardWidth - SCORE_TEXT.length - 2;
-        if (this.scoreUnits > SCORE_MAX_UNITS) {
-            this.scoreUnits = SCORE_MAX_UNITS;
-        }
+        this.calculateBoardDimensionsAndPosition();
+        this.calculateScoreUnits();
 
         // initialize board content
         this.initScoreBoard(7899);
@@ -86,7 +72,6 @@ export class Scoreboard extends ScreenObject {
         // calculate score positions relatively to board width, height, score texts and score units
         this.calculateScorePosition();
 
-
         this.insertContent(board, SCORE_TEXT, this.inBoardScoreTextPos.y);
         this.insertContent(board, HIGHEST_SCORE_TEXT, this.inBoardHighScoreTextPos.y);
         this.scoreBoard = board;
@@ -96,7 +81,12 @@ export class Scoreboard extends ScreenObject {
     }
 
     public updateDimensions(width: number, height: number): void {
+        this.screenWidth = width;
+        this.screenHeight = height;
 
+        this.calculateBoardDimensionsAndPosition();
+        this.calculateScoreUnits();
+        this.initScoreBoard(this.highScore);
     }
 
     private updateHighScore(newScore: number) {
@@ -117,6 +107,26 @@ export class Scoreboard extends ScreenObject {
         this.insertContent(this.scoreBoard, score, this.inBoardScorePos.y, this.inBoardScorePos.x);
     }
 
+    private calculateBoardDimensionsAndPosition() {
+        this._boardWidth = Math.floor(this.screenWidth * BOARD_WIDTH_PCT);
+        this._boardHeight = Math.floor(this.screenHeight * BOARD_HEIGHT_PCT);
+
+        // assure space for both scores
+        if (this._boardHeight % 2 !== 0) {
+            this._boardHeight++;
+        }
+
+        // in screen position
+        this.boardDrawingPos = { x: this.screenWidth - this._boardWidth - SCOREBOARD_RIGHT_MARGIN, y: SCOREBOARD_TOP_MARGIN };
+    }
+
+    private calculateScoreUnits() {
+        this.scoreUnits = this._boardWidth - SCORE_TEXT.length - 2;
+        if (this.scoreUnits > SCORE_MAX_UNITS) {
+            this.scoreUnits = SCORE_MAX_UNITS;
+        }
+    }
+
     private calculateScoreTextPosition(): void {
         const topMargin = Math.floor(this._boardHeight * 0.25); // 25% under board top edge
         const bottomMargin = Math.floor(this._boardHeight * 0.25); // 25% above board bottom edge
@@ -134,7 +144,7 @@ export class Scoreboard extends ScreenObject {
 
         // rightMargin = freespace * 0.80 ;
         const contentLength = SCORE_TEXT.length + this.inBoardScoreTextPos.x + this.scoreUnits + 2;
-        const rightMargin = Math.floor((this._boardWidth - contentLength) * 0.55); // 80% to the right
+        const rightMargin = Math.floor((this._boardWidth - contentLength) * 0.55); // 55% to the right
         const xPos = this._boardWidth - this.scoreUnits - rightMargin - 2;
 
         this.inBoardScorePos = { x: xPos, y: this.inBoardScoreTextPos.y };
@@ -176,7 +186,7 @@ export class Scoreboard extends ScreenObject {
 
     /***************** getters *****************/
     public isDrawable(): boolean {
-        return this.drawable;
+        return this._boardHeight >= MIN_BOARD_HEIGHT && this._boardWidth >= MIN_BOARD_WIDTH;
     }
 
     public isHighScoreDrawable(): boolean {

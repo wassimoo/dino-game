@@ -36,7 +36,7 @@ export class Trex extends ScreenObject {
         }
     }
 
-    public updateDimensions(): void {
+    public updateDimensions(width: number, height: number): void {
 
     }
 }

@@ -83,7 +83,7 @@ export class Scoreboard extends ScreenObject {
         const board: string[] = this.initEdges();
 
         this.calculateScoreTextPosition();
-        // calculate score positions relatively to board width, score texts and score units
+        // calculate score positions relatively to board width, height, score texts and score units
         this.calculateScorePosition();
 
 

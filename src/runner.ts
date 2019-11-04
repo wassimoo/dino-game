@@ -15,11 +15,14 @@ export class Runner {
     private isPaused: boolean;
     private obstacles;
 
+    private currentSpeed: number;
+
     private lastUpdate: number; // in ms
     private msPerFrame = 1000 / configs.FPS;
 
     //configs
     constructor() {
+        this.currentSpeed = configs.SPEED;
         readline.emitKeypressEvents(process.stdin);
         this.terminal = new TTY();
         this.distanceMeter = new DistanceMeter(0, 0);
@@ -49,12 +52,17 @@ export class Runner {
     }
 
     private nextFrame(deltaTime: number) {
-        const distance = deltaTime / this.msPerFrame;
+        const distance = this.currentSpeed * deltaTime / this.msPerFrame;
         const actualDistance = this.distanceMeter.update(distance);
 
         this.terminal.scoreboard.updateCurrentScore(actualDistance);
         this.terminal.drawScoreBoard();
         this.terminal.drawTrex();
+
+        // update current speed
+        if (this.currentSpeed < configs.MAX_SPEED) {
+            this.currentSpeed += configs.ACCELERATION;
+        }
     }
 
     private setupScreenResizeListner() {

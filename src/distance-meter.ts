@@ -9,34 +9,30 @@ export class DistanceMeter {
 
     //TODO: add highscore flashing
 
-    constructor(msPerFrame: number, highScore: number, distance: number = 0) {
+    constructor(highScore: number, distance: number = 0) {
         this.distanceRan = distance;
         this.highestscore = highScore;
-        this.msPerFrame = msPerFrame;
         this.lastDistanceUpdatetime = Date.now();
     }
 
-    public update(): void {
-        const now = Date.now();
-        const delta = now - (this.lastDistanceUpdatetime || now); // ms between function calls
-        if(delta <= this.msPerFrame){
-            return;
+    public update(distance: number): number {
+        if (distance > 0) {
+            this.distanceRan += distance; // 1 px per frame.
+            if (this.distanceRan > this.highestscore) {
+                this.highestscore = this.distanceRan;
+            }
+            return this.getActualDistance();
+        } else {
+            this.distanceRan = 0;
+            return 0;
         }
-        this.lastDistanceUpdatetime = now;
-
-        this.distanceRan += delta / this.msPerFrame; // 1 px per frame.
-        if (this.distanceRan > this.highestscore) {
-            this.highestscore = this.distanceRan;
-        }
-
     }
 
     /**
      * Resets the distance meter back to zero
      */
     public reset(): void {
-        this.distanceRan = 0;
-        this.lastDistanceUpdatetime = Date.now();
+        this.update(0);
     }
 
     /**

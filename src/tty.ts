@@ -32,9 +32,9 @@ export class TTY {
         this.runway = new Runway(this._width, this._height);
         this.scoreboard = new Scoreboard(this._width, this._height, 0);
 
-        INITIAL_POSITION.TREX = { x: 1, y: this._height - TREX_HEIGHT - RUNWAY_BOTTOM_MARGIN };
-        INITIAL_POSITION.RUNWAY = { x: 0, y: this._height - RUNWAY_BOTTOM_MARGIN };
-        INITIAL_POSITION.SCOREBOARD = this.scoreboard.getBoardDrawingPos();
+        INITIAL_POSITION.TREX = this.trex.getDrawingPos(this._width, this._height);
+        INITIAL_POSITION.RUNWAY = this.runway.getDrawingPos(this._width, this._height);
+        INITIAL_POSITION.SCOREBOARD = this.scoreboard.getDrawingPos(this._width, this._height);
     }
 
     public drawScreen(): void {
@@ -55,16 +55,10 @@ export class TTY {
         this._height = process.stdout.rows;
         this._width = process.stdout.columns;
 
-        // update objects 
-        this.runway.updateDimensions(this._width, this._height);
-        this.trex.updateDimensions(this._width, this._height);
-        this.scoreboard.updateDimensions(this._width, this._height);
-
         // update objects drawing pos
-        INITIAL_POSITION.TREX = { x: 1, y: this._height - TREX_HEIGHT - RUNWAY_BOTTOM_MARGIN };
-        INITIAL_POSITION.RUNWAY = { x: 0, y: this._height - RUNWAY_BOTTOM_MARGIN };
-        INITIAL_POSITION.SCOREBOARD = this.scoreboard.getBoardDrawingPos();
-
+        INITIAL_POSITION.TREX = this.trex.getDrawingPos(this._width, this._height);
+        INITIAL_POSITION.RUNWAY = this.runway.getDrawingPos(this._width, this._height);
+        INITIAL_POSITION.SCOREBOARD = this.scoreboard.getDrawingPos(this._width, this._height);
 
         this.clear();
         this.hideCursor();

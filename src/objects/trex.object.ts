@@ -1,4 +1,10 @@
 import { ScreenObject } from './object';
+import { IScreenPosition } from '../interfaces/IPosition';
+import {
+    RUNWAY_BOTTOM_MARGIN,
+    TREX_HEIGHT,
+} from './object.constants';
+
 import {
     RUNNING_TREX_1,
     RUNNING_TREX_2,
@@ -6,15 +12,15 @@ import {
 } from './object.constants';
 
 export class Trex extends ScreenObject {
-    private width: number;
-    private height: number;
+    private screenWidth: number;
+    private screenHeight: number;
 
     private isAtRunningTrex1: boolean;
 
-    constructor(width: number, height: number) {
+    constructor(screenWidth: number, screenHeight: number) {
         super();
-        this.width = width;
-        this.height = height;
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
 
     }
 
@@ -36,7 +42,10 @@ export class Trex extends ScreenObject {
         }
     }
 
-    public updateDimensions(width: number, height: number): void {
+    public getDrawingPos(screenWidth: number, screenHeight: number): IScreenPosition {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
 
+        return { x: 1, y: this.screenHeight - TREX_HEIGHT - RUNWAY_BOTTOM_MARGIN };
     }
 }

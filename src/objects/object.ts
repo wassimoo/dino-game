@@ -1,7 +1,8 @@
+import { IScreenPosition } from '../interfaces/IPosition';
+
 export abstract class ScreenObject {
 
     public abstract getDrawable(): any;
 
-    public abstract updateDimensions(width: number, height: number): void;
-
+    public abstract getDrawingPos(screenHeight: number, screenWidth: number): IScreenPosition;
 }

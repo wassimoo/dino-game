@@ -80,15 +80,6 @@ export class Scoreboard extends ScreenObject {
         this.updateHighScore(highScore);
     }
 
-    public updateDimensions(width: number, height: number): void {
-        this.screenWidth = width;
-        this.screenHeight = height;
-
-        this.calculateBoardDimensionsAndPosition();
-        this.calculateScoreUnits();
-        this.initScoreBoard(this.highScore);
-    }
-
     private updateHighScore(newScore: number) {
         this.highScore = newScore;
         let score = newScore.toString();
@@ -185,9 +176,6 @@ export class Scoreboard extends ScreenObject {
     }
 
     /***************** getters *****************/
-    public isDrawable(): boolean {
-        return this._boardHeight >= MIN_BOARD_HEIGHT && this._boardWidth >= MIN_BOARD_WIDTH;
-    }
 
     public isHighScoreDrawable(): boolean {
         return this.showHighScore;
@@ -205,7 +193,18 @@ export class Scoreboard extends ScreenObject {
         return this._boardHeight;
     }
 
-    public getBoardDrawingPos(): IScreenPosition {
+    public isDrawable(): boolean {
+        return this._boardHeight >= MIN_BOARD_HEIGHT && this._boardWidth >= MIN_BOARD_WIDTH;
+    }
+
+    public getDrawingPos(screenWidth: number, screenHeight: number): IScreenPosition {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+
+        this.calculateBoardDimensionsAndPosition();
+        this.calculateScoreUnits();
+        this.initScoreBoard(this.highScore);
+
         return this.boardDrawingPos;
     }
 }

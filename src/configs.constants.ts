@@ -5,7 +5,7 @@ export const DISTANCE_METER_CONFIGS = {
 
 export const RUNNER_CONFIGS = {
     FPS: 25,
-    ACCELERATION: 0.001,
-    SPEED: 1,
-    MAX_SPEED: 8,
+    ACCELERATION: 0.0023,
+    SPEED: 2,
+    MAX_SPEED: 6,
 };

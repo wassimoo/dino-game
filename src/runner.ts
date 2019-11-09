@@ -15,6 +15,8 @@ export class Runner {
     private isPaused: boolean;
     private obstacles;
 
+    private lastFrameDistance: number;
+
     private currentSpeed: number;
 
     private lastUpdate: number; // in ms
@@ -35,6 +37,7 @@ export class Runner {
 
         this.terminal.drawScreen();
 
+        this.lastFrameDistance = 0;
         this.lastUpdate = Date.now();
         this.nextFrame(0);
 
@@ -57,7 +60,12 @@ export class Runner {
 
         this.terminal.scoreboard.updateCurrentScore(actualDistance);
         this.terminal.drawScoreBoard();
-        this.terminal.drawTrex();
+
+        if (deltaTime !== 0 && actualDistance > this.lastFrameDistance) {
+            this.lastFrameDistance  = actualDistance;
+            this.terminal.drawTrex();
+
+        }
 
         // update current speed
         if (this.currentSpeed < configs.MAX_SPEED) {

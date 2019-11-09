@@ -4,15 +4,11 @@ export class DistanceMeter {
     private distanceRan: number;
     private highestscore: number;
 
-    private msPerFrame: number;
-    private lastDistanceUpdatetime: number; // in ms
-
     //TODO: add highscore flashing
 
     constructor(highScore: number, distance: number = 0) {
         this.distanceRan = distance;
         this.highestscore = highScore;
-        this.lastDistanceUpdatetime = Date.now();
     }
 
     public update(distance: number): number {
